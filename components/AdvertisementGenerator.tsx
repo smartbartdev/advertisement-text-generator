@@ -19,7 +19,6 @@ function AdvertisementGenerator() {
     const [language, setLanguage] = useState('English')
     const [terms, setTerms] = useState('')
     const [initialCompletionOutput, setInitialCompletionOutput] = useState('')
-    const [regenerateCompletionOutput, setRegenerateCompletionOutput] = useState(initialCompletionOutput)
     const [openaikey, setOpenAiAPIKey] = useState('')
 
     const configuration = new Configuration({
@@ -38,20 +37,6 @@ function AdvertisementGenerator() {
             }
         )
         setInitialCompletionOutput(response.data.choices[0].text || "Nothing was generated.")
-    }
-
-    async function regenerateAdvertisement() {
-        const response = await openai.createCompletion(
-            {
-                model: "text-davinci-003",
-                prompt: `Regenerate the concise ${platform} advertisement text for "${terms}" in ${language}. The old text is: ${initialCompletionOutput}`,
-                temperature: 0,
-                max_tokens: 100,
-            }
-        )
-        const output = response.data.choices[0].text || "Nothing was regenerated."
-        setInitialCompletionOutput(output)
-        setRegenerateCompletionOutput(output)
     }
 
     return (
@@ -90,7 +75,7 @@ function AdvertisementGenerator() {
                     <Box>
                         <Text>Generated text</Text>
                         <Textarea id="output" rows={24}
-                                  value={regenerateCompletionOutput ? regenerateCompletionOutput.trim() : initialCompletionOutput.trim()}
+                                  value={initialCompletionOutput.trim()}
                                   readOnly/>
                     </Box>
                     <Box
@@ -107,15 +92,9 @@ function AdvertisementGenerator() {
                                 Generate
                             </Button>
                             <Spacer/>
-                            <Button
-                                id={'regenerateButton'}
-                                bg={'blue.500'}
-                                color={'white'}
-                                _hover={{bg: "blue.400"}}
-                                variant={'solid'}
-                                onClick={regenerateAdvertisement}>
-                                Regenerate
-                            </Button>
+                            <Text as={'i'}>
+                                Change the keywords to generate a new text.
+                            </Text>
                         </Stack>
                     </Box>
                 </Box>
